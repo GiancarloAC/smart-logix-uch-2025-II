@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2/promise');
+const { PubSub } = require('@google-cloud/pubsub');
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,10 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
+
+// 📡 Inicializar Pub/Sub
+const pubsub = new PubSub();
+const TOPIC_NAME = process.env.PUBSUB_TOPIC || 'enrollments-topic';
 
 // --------- RUTAS ---------
 
@@ -65,6 +70,27 @@ app.post('/enrollments', async (req, res) => {
       'INSERT INTO enrollments (student_id, course_id, puntaje, estado) VALUES (?, ?, ?, ?)',
       [studentId, courseId, 100, 'Activo']
     );
+
+    const enrollmentData = {
+      id: result.insertId,
+      student_id: studentId,
+      course_id: courseId,
+      puntaje: 100,
+      estado: 'Activo',
+      fecha_matricula: new Date().toISOString()
+    };
+
+    // 📤 Publicar en Pub/Sub
+    try {
+      await pubsub.topic(TOPIC_NAME).publishMessage({
+        data: Buffer.from(JSON.stringify(enrollmentData))
+      });
+      console.log(`✅ Mensaje publicado en ${TOPIC_NAME}:`, enrollmentData);
+    } catch (pubsubError) {
+      console.error('⚠️ Error al publicar en Pub/Sub:', pubsubError);
+      // No fallar el request si Pub/Sub falla
+    }
+
     res.status(201).json({
       id: result.insertId,
       studentId,
