@@ -1,0 +1,27 @@
+{
+  "name": "smart-logix-uch-2025-ii",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GiancarloAC/smart-logix-uch-2025-II.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GiancarloAC/smart-logix-uch-2025-II/issues"
+  },
+  "homepage": "https://github.com/GiancarloAC/smart-logix-uch-2025-II#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mysql2": "^3.15.1"
+  }
+}

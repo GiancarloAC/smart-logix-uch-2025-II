@@ -1,1 +1,1 @@
-# -smart-logix-uch-2025-II
+# smart-logix-uch-2025-II
